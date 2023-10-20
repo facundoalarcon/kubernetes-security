@@ -1,4 +1,4 @@
-# Testing The Config
+# Testing The Config
 To confirm that the OPA policy that you implemented works, you can test it out with the two Kubernetes Manifests below.
 
 The Manifest with the latest tag won’t work because you created a policy in the previous step to ensure that latest tags cannot be used. The deployment itself will deploy, but the Pods won’t come online.
