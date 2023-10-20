@@ -34,7 +34,7 @@ echo $PROXY_IP # use this IP and port in Nginx
 ```bash
 docker network ls
 
-# 443 is the port defined on nginx.conf, use -dif you want run this command as background background
+# 443 is the port defined on nginx.conf, use -dif you want run this command as background
 ARGOCD_PORT=${ARGOCD_PORT=443}
 
 docker run  --network [minikube_network_id] \
