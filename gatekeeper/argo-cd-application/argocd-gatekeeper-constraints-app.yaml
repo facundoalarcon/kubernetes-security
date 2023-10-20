@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gatekeeper-constraints
+spec:
+  destination:
+    name: ''
+    namespace: gatekeeper-system
+    server: 'https://minikube-user:6443'
+  source:
+    path: gatekeeper/constraints
+    repoURL: 'https://github.com/facundoalarcon/kubernetes-security'
+    targetRevision: HEAD
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: truecle
+    syncOptions:
+      - ApplyOutOfSyncOnly=true

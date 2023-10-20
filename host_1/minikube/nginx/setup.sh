@@ -1,0 +1,63 @@
+#!/bin/bash
+
+cat <<EOF > nginx.conf 
+user  nginx;
+worker_processes  auto;
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
+events {
+    worker_connections  1024;
+}
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+    access_log  /var/log/nginx/access.log  main;
+    sendfile        on;
+    #tcp_nopush     on;
+    keepalive_timeout  65;
+    #gzip  on;
+    include /etc/nginx/conf.d/*.conf;
+
+    upstream local-minikube {
+      server ${MINIKUBE_IP}:${MINIKUBE_PORT};
+    }
+
+    server {
+       server_name ${HOST_IP} minikube-user;
+       listen 80;
+       return 301 https://$host$request_uri;
+    }
+
+    server {
+      server_name ${HOST_IP} minikube-user;
+      listen ${MINIKUBE_PORT} ssl;
+
+      ssl_certificate           /etc/nginx/certs/minikube-client.crt;
+      ssl_certificate_key       /etc/nginx/certs/minikube-client.key;
+
+      set_real_ip_from 0.0.0.0/0;
+      real_ip_header X-Real-IP;
+      real_ip_recursive on;
+
+      location / {
+           proxy_pass https://local-minikube;
+
+           proxy_redirect off;
+           proxy_set_header Host $host:$server_port;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $remote_addr;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_set_header X-Forwarded-Port ${MINIKUBE_PORT};
+
+      }
+    }
+}
+
+EOF
+
+
+apt-get install apache2-utils -y
+
