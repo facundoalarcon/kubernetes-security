@@ -35,9 +35,3 @@ That said, to address Gatekeeper's security policy while still allowing the *ngi
 
 # Resources
 * [blog](https://dev.to/thenjdevopsguy/writing-your-first-kubernetes-opa-policy-with-gatekeeper-145a)
-
-
-kubectl apply -f bad-policy.yaml -n gatekeeper-system
-kubectl apply -f policy-ok.yaml -n gatekeeper-system
-kubectl delete -f bad-policy.yaml -n gatekeeper-system
-kubectl delete -f policy-ok.yaml -n gatekeeper-system
