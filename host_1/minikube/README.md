@@ -25,3 +25,30 @@ kubectl networks ls # check the minikube network id
 
 docker network connect [minikube_network_id] [nginx_container_id]
 ```
+
+## Cluster Authentication
+[kubelogin](https://github.com/int128/kubelogin) is a kubectl plugin for Kubernetes OpenID Connect (OIDC) authentication, also known as kubectl oidc-login. With this plugin, we will use the [PKCE flow](https://oauth.net/2/pkce/), a secure authentication method recommended for distributed clients.
+
+```bash
+kubectl oidc-login setup \
+--oidc-issuer-url=$YOUR_ISSUER_URL\
+--oidc-client-id=$YOUR_CLIENT_ID \
+--oidc-use-pkce
+
+kubectl config set-credentials oidc \
+          --exec-api-version=client.authentication.k8s.io/v1beta1 \
+          --exec-command=kubectl \
+          --exec-arg=oidc-login \
+          --exec-arg=get-token \
+          --exec-arg=--oidc-issuer-url=$YOUR_ISSUER_URL \
+          --exec-arg=--oidc-client-id=$YOUR_CLIENT_ID \
+          --exec-arg=--oidc-use-pkce
+
+kubectl create clusterrolebinding oidc-cluster-admin --clusterrole=cluster-admin --group=$YOUR_GROUP
+
+kubectl --user=oidc get nodes
+
+# if you want
+kubectl config set-context --current --user=oidc
+
+```
