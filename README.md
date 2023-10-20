@@ -4,4 +4,4 @@ Having an external Identity Provider (IdP) not only offers a broader range of se
 
 ## Lab architecture
 
-![lab](https://github.com/facundoalarcon/kubernetes-security/tree/main/img/lab.png)
+![lab](https://github.com/facundoalarcon/kubernetes-security/blob/main/img/lab.png)
